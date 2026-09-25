@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Triton-Ocean-Systems/triton-observation-schema/schema/observation.schema.json",
+  "title": "Triton Observation Record",
+  "description": "A single ocean observation with the provenance needed to trust, compare and reuse it: node identity, time, location, sensor, calibration, quality and lineage. Draft v0.1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "observation_id",
+    "node",
+    "observed_at",
+    "location",
+    "sensor",
+    "variable",
+    "value",
+    "quality",
+    "lineage"
+  ],
+  "properties": {
+    "schema_version": {
+      "description": "Version of this schema the record conforms to.",
+      "const": "0.1.0"
+    },
+    "observation_id": {
+      "description": "Globally unique identifier for this observation (UUID).",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "node": {
+      "description": "The platform that produced the observation.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_id", "node_type"],
+      "properties": {
+        "node_id": {
+          "description": "Stable identifier of the node.",
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "node_type": {
+          "type": "string",
+          "enum": ["beachnode", "oceannode", "sailnode", "external", "other"]
+        },
+        "firmware_version": { "type": "string", "maxLength": 64 },
+        "operator": {
+          "description": "Organization responsible for the node.",
+          "type": "string",
+          "maxLength": 128
+        }
+      }
+    },
+    "observed_at": {
+      "description": "Time the measurement was taken, RFC 3339 in UTC.",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "received_at": {
+      "description": "Time the record reached the platform, RFC 3339 in UTC.",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["latitude", "longitude", "position_source"],
+      "properties": {
+        "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+        "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+        "depth_m": {
+          "description": "Depth below the sea surface in meters (positive down). Omit for above-water sensors.",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 11000
+        },
+        "position_source": {
+          "type": "string",
+          "enum": ["gnss", "fixed_survey", "estimated"]
+        },
+        "horizontal_accuracy_m": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "sensor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sensor_id"],
+      "properties": {
+        "sensor_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "manufacturer": { "type": "string", "maxLength": 128 },
+        "model": { "type": "string", "maxLength": 128 },
+        "serial_number": { "type": "string", "maxLength": 128 }
+      }
+    },
+    "variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "unit"],
+      "properties": {
+        "name": {
+          "description": "Triton variable name, lower snake case.",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "cf_standard_name": {
+          "description": "CF Conventions standard name, when one exists.",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "unit": {
+          "description": "Unit in UCUM notation (e.g. Cel, m/s, 1 for dimensionless).",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      }
+    },
+    "value": {
+      "description": "The measured or derived value.",
+      "type": ["number", "string", "boolean"]
+    },
+    "uncertainty": {
+      "description": "Standard uncertainty of the value, in the same unit.",
+      "type": "number",
+      "minimum": 0
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flag"],
+      "properties": {
+        "flag": {
+          "description": "IOOS QARTOD primary flag: 1 pass, 2 not evaluated, 3 suspect, 4 fail, 9 missing.",
+          "type": "integer",
+          "enum": [1, 2, 3, 4, 9]
+        },
+        "tests_applied": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 64 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "calibration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["calibrated_at", "method"],
+      "properties": {
+        "calibrated_at": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "method": {
+          "type": "string",
+          "enum": ["factory", "lab", "field_reference", "cross_sensor"]
+        },
+        "certificate_id": { "type": "string", "maxLength": 128 }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["processing_level", "software"],
+      "properties": {
+        "processing_level": {
+          "description": "raw: direct sensor output. derived: computed from other observations. aggregated: statistics over a window.",
+          "type": "string",
+          "enum": ["raw", "derived", "aggregated"]
+        },
+        "derived_from": {
+          "description": "observation_id values this record was computed from.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          }
+        },
+        "software": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1, "maxLength": 64 },
+            "version": { "type": "string", "minLength": 1, "maxLength": 64 }
+          }
+        },
+        "raw_payload_sha256": {
+          "description": "SHA-256 of the original raw payload, for integrity checks.",
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "processing_level": { "enum": ["derived", "aggregated"] } } },
+          "then": { "required": ["derived_from"] }
+        }
+      ]
+    }
+  }
+}
