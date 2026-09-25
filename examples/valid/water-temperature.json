@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "observation_id": "3f1c2a9e-7b4d-4c1e-9a0f-2d6b8e5c1a70",
+  "node": {
+    "node_id": "beachnode-example-01",
+    "node_type": "beachnode",
+    "firmware_version": "0.1.0"
+  },
+  "observed_at": "2026-09-24T14:00:00Z",
+  "received_at": "2026-09-24T14:00:03Z",
+  "location": {
+    "latitude": 26.0112,
+    "longitude": -80.1156,
+    "depth_m": 0.5,
+    "position_source": "fixed_survey",
+    "horizontal_accuracy_m": 2
+  },
+  "sensor": {
+    "sensor_id": "temp-01",
+    "manufacturer": "Example Instruments",
+    "model": "T-100"
+  },
+  "variable": {
+    "name": "water_temperature",
+    "cf_standard_name": "sea_water_temperature",
+    "unit": "Cel"
+  },
+  "value": 29.4,
+  "uncertainty": 0.1,
+  "quality": {
+    "flag": 1,
+    "tests_applied": ["gross_range", "spike", "rate_of_change"]
+  },
+  "calibration": {
+    "calibrated_at": "2026-08-01T00:00:00Z",
+    "method": "lab"
+  },
+  "lineage": {
+    "processing_level": "raw",
+    "software": { "name": "node-firmware", "version": "0.1.0" },
+    "raw_payload_sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+  }
+}
