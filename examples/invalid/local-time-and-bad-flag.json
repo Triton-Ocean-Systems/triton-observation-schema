@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "observation_id": "e5f6a7b8-c9d0-4e1f-a2b3-c4d5e6f7a8b9",
+  "node": {
+    "node_id": "beachnode-example-01",
+    "node_type": "beachnode"
+  },
+  "observed_at": "2026-09-24T10:00:00-04:00",
+  "location": {
+    "latitude": 26.0112,
+    "longitude": -80.1156,
+    "position_source": "fixed_survey"
+  },
+  "sensor": {
+    "sensor_id": "temp-01"
+  },
+  "variable": {
+    "name": "water_temperature",
+    "unit": "Cel"
+  },
+  "value": 29.4,
+  "quality": {
+    "flag": 5
+  },
+  "lineage": {
+    "processing_level": "raw",
+    "software": { "name": "node-firmware", "version": "0.1.0" }
+  }
+}
