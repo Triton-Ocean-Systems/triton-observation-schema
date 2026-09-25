@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1.0",
+  "observation_id": "b7e2d4c1-5a3f-4e8b-8c9d-1f0a2b3c4d5e",
+  "node": {
+    "node_id": "beachnode-example-01",
+    "node_type": "beachnode"
+  },
+  "observed_at": "2026-09-24T14:05:00Z",
+  "location": {
+    "latitude": 26.0112,
+    "longitude": -80.1156,
+    "position_source": "fixed_survey"
+  },
+  "sensor": {
+    "sensor_id": "cam-01"
+  },
+  "variable": {
+    "name": "sargassum_coverage_fraction",
+    "unit": "1"
+  },
+  "value": 0.18,
+  "uncertainty": 0.05,
+  "quality": {
+    "flag": 2
+  },
+  "lineage": {
+    "processing_level": "derived",
+    "derived_from": ["c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f"],
+    "software": { "name": "edge-vision", "version": "0.1.0" }
+  }
+}
